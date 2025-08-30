@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>เครื่องมือการศึกษา</title>
+
+  <!-- พิกัดฟอนต์ภาษาไทยค่าบ -->
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --accent: #6c63ff;
+      --text: #202124;
+      --muted: #6b7280;
+      --radius: 12px;
+      --glass: rgba(255,255,255,0.6);
+      font-family: 'Sarabun', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);}
+    *{box-sizing:border-box}
+
+    header{
+      padding:20px;
+      display:flex;
+      gap:16px;
+      align-items:center;
+      justify-content:space-between;
+      max-width:1200px;margin:0 auto;
+    }
+
+    .brand{
+      display:flex;gap:12px;align-items:center;
+    }
+    .logo{
+      width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#4db6ff);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;box-shadow:0 6px 18px rgba(108,99,255,0.18);
+    }
+    h1{font-size:18px;margin:0}
+    p.sub{margin:0;color:var(--muted);font-size:13px}
+
+    main{max-width:1200px;margin:18px auto;padding:18px;display:grid;grid-template-columns:repeat(12,1fr);gap:16px;}
+    .card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:0 6px 18px rgba(16,24,40,0.06);}
+
+    /* layout */
+    .left{grid-column:span 5}
+    .mid{grid-column:span 4}
+    .right{grid-column:span 3}
+
+    @media (max-width:1000px){
+      main{grid-template-columns:repeat(6,1fr);}
+      .left{grid-column:1/-1}
+      .mid{grid-column:1/-1}
+      .right{grid-column:1/-1}
+    }
+
+    h2{margin:4px 0 12px 0;font-size:16px}
+    label{display:block;margin:8px 0 6px 0;color:var(--muted);font-size:13px}
+    input[type="text"], input[type="number"], textarea, select {
+      width:100%;padding:10px;border-radius:10px;border:1px solid #e6e9ef;font-size:15px;background:#fbfbfe;
+    }
+    textarea{min-height:100px;resize:vertical}
+
+    .row{display:flex;gap:8px;align-items:center}
+    .row .flex{flex:1}
+
+    .btn{
+      display:inline-block;padding:10px 14px;border-radius:10px;border:0;background:var(--accent);color:white;font-weight:600;cursor:pointer;box-shadow:0 6px 14px rgba(108,99,255,0.18);
+      transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
+    }
+    .btn:hover{transform:translateY(-4px);box-shadow:0 14px 28px rgba(108,99,255,0.2);filter:brightness(1.03)}
+    .btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(108,99,255,0.12);box-shadow:none}
+
+    .output{
+      background:linear-gradient(180deg,rgba(0,0,0,0.02),rgba(0,0,0,0.01));padding:12px;border-radius:10px;border:1px solid #f0f2f7;font-size:16px;
+      min-height:44px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    }
+
+    /* small helper */
+    .muted{color:var(--muted);font-size:13px}
+    .controls{display:flex;gap:8px;flex-wrap:wrap}
+    .small{font-size:13px;padding:8px 10px;border-radius:8px}
+
+    /* timer big display */
+    .big-time{font-weight:700;font-size:28px}
+
+    /* theme controls */
+    .color-picker{display:flex;gap:8px;align-items:center}
+
+    footer{max-width:1200px;margin:18px auto;padding:18px;color:var(--muted);font-size:13px}
+
+    /* nice hover for input focus */
+    input:focus, textarea:focus, select:focus{outline:none;box-shadow:0 6px 18px rgba(108,99,255,0.06);border-color:rgba(108,99,255,0.18)}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">M</div>
+    <div>
+      <h1>Edu Tools — เครื่องมือการศึกษา</h1>
+      <p class="sub">เครื่องคิดเลข · ระบบสุ่ม · จับเวลา</p>
+    </div>
+  </div>
+
+  <div class="color-picker card" style="display:flex;gap:12px;align-items:center;">
+    <div style="font-size:13px;color:var(--muted)">ธีมสี</div>
+    <input id="accentColor" type="color" value="#6c63ff" title="เลือกสีเน้น" />
+    <div style="font-size:13px;color:var(--muted)">พื้นหลัง</div>
+    <input id="bgColor" type="color" value="#f6f8fb" title="สีพื้นหลัง" />
+  </div>
+</header>
+
+<main>
+
+  <!-- LEFT: Calculator -->
+  <section class="card left">
+    <h2>เครื่องคิดเลข</h2>
+    <div class="muted">เลือกโหมด:</div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn" id="calc-basic-btn">คณิตศาสตร์พื้นฐาน</button>
+      <button class="btn ghost" id="calc-adv-btn">คำนวณด้วยสูตรขั้นสูง</button>
+    </div>
+
+    <div id="calculator" style="margin-top:12px">
+      <!-- Basic mode UI -->
+      <div id="calc-basic" style="margin-top:10px;">
+        <label>ป้อนนิพจน์ (รองรับ + - * / และวงเล็บ)</label>
+        <input id="basicExpr" type="text" placeholder="เช่น 12 + 3 * (2 - 1)" />
+        <div style="margin-top:8px;display:flex;gap:8px;">
+          <button class="btn" id="calc-basic-eval">คำนวณ</button>
+          <button class="btn ghost" id="calc-basic-clear">ล้าง</button>
+        </div>
+        <div style="margin-top:10px" class="output" id="basicResult">ผลลัพธ์จะแสดงที่นี่</div>
+      </div>
+
+      <!-- Advanced mode UI -->
+      <div id="calc-adv" style="display:none;margin-top:10px;">
+        <label>ป้อนสูตร (รองรับฟังก์ชัน Math: sin(), cos(), tan(), sqrt(), pow(), log(), abs(), round(), floor(), ceil())</label>
+        <input id="advExpr" type="text" placeholder="เช่น sqrt(2) + pow(3,2) or sin(30 * Math.PI/180)" />
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn" id="calc-adv-eval">ประมวลผลสูตร</button>
+          <button class="btn ghost" id="calc-adv-sample">ตัวอย่าง</button>
+          <button class="btn ghost" id="calc-adv-clear">ล้าง</button>
+        </div>
+        <div style="margin-top:10px" class="output" id="advResult">ผลลัพธ์จะแสดงที่นี่</div>
+        <div class="muted" style="margin-top:8px">คำเตือน: หลีกเลี่ยงการใส่โจทย์ที่ไม่ใช่สมการ</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MID: Randomizer -->
+  <section class="card mid">
+    <h2>ระบบการสุ่ม</h2>
+    <div class="muted">โหมดการสุ่ม</div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button class="btn" id="rand-pick-btn">สุ่มเลือกตามจำนวน</button>
+      <button class="btn ghost" id="rand-group-btn">สุ่มแบ่งกลุ่ม</button>
+    </div>
+
+    <div id="rand-pick" style="margin-top:12px;">
+      <label>ใส่รายการ (คั่นด้วยบรรทัดใหม่ หรือเครื่องหมาย , )</label>
+      <textarea id="randItems" placeholder="ตัวอย่าง: A,B,C หรือ คำที่1\คำที่2\คำที่3"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
+        <input id="randCount" type="number" class="small" min="1" value="1" />
+        <div class="muted">จำนวนที่ต้องการสุ่ม</div>
+        <button class="btn" id="do-rand-pick">สุ่ม</button>
+        <button class="btn ghost" id="rand-clear">ล้าง</button>
+      </div>
+      <div style="margin-top:12px" class="output" id="randResult">ผลการสุ่มจะปรากฏที่นี่</div>
+    </div>
+
+    <div id="rand-group" style="display:none;margin-top:12px;">
+      <label>กำหนดจำนวนสมาชิก (หรือใส่รายการชื่อ)</label>
+      <input id="groupMembers" type="text" placeholder="ใส่จำนวนสมาชิกเช่น 12 หรือ รายชื่อคั่นด้วยบรรทัดใหม่" />
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
+        <input id="groupCount" type="number" min="1" value="3" class="small"/>
+        <div class="muted">จำนวนกลุ่ม</div>
+        <button class="btn" id="do-rand-group">แบ่งกลุ่ม</button>
+        <button class="btn ghost" id="group-clear">ล้าง</button>
+      </div>
+      <div style="margin-top:12px" class="output" id="groupResult">ผลการแบ่งกลุ่มจะแสดงที่นี่</div>
+      <div class="muted" style="margin-top:8px">ระบบจะแบ่งแบบจำนวนเต็ม โดยแจกจ่ายสมาชิกที่เหลือไปยังกลุ่มแรกๆ</div>
+    </div>
+  </section>
+
+  <!-- RIGHT: Timer -->
+  <section class="card right">
+    <h2>ระบบจับเวลา</h2>
+    <div class="muted">เลือกโหมด</div>
+    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+      <button class="btn" id="mode-countdown">นับถอยหลัง</button>
+      <button class="btn ghost" id="mode-stopwatch">นาฬิกาจับเวลา</button>
+      <button class="btn ghost" id="mode-clock">นาฬิกาท้องถิ่น (GMT+7)</button>
+    </div>
+
+    <div id="timer-countdown" style="margin-top:12px;">
+      <label>ป้อนเวลา (Hour:Minute:Second)</label>
+      <div style="display:flex;gap:6px;">
+        <input id="cdH" type="number" min="0" max="24" placeholder="ชั่วโมง" class="small" value="0"/>
+        <input id="cdM" type="number" min="0" max="59" placeholder="นาที" class="small" value="0"/>
+        <input id="cdS" type="number" min="0" max="59" placeholder="วินาที" class="small" value="10"/>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button class="btn" id="cdStart">เริ่ม</button>
+        <button class="btn ghost" id="cdPause">หยุดชั่วคราว</button>
+        <button class="btn ghost" id="cdReset">รีเซ็ต</button>
+      </div>
+      <div style="margin-top:10px" class="output big-time" id="cdDisplay">00:00:00</div>
+    </div>
+
+    <div id="timer-stopwatch" style="display:none;margin-top:12px;">
+      <label>โหมดนาฬิกาจับเวลา</label>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button class="btn" id="swStart">เริ่ม</button>
+        <button class="btn ghost" id="swStop">หยุด</button>
+        <button class="btn ghost" id="swReset">รีเซ็ต</button>
+      </div>
+      <div style="margin-top:10px" class="output big-time" id="swDisplay">00:00.00</div>
+    </div>
+
+    <div id="timer-clock" style="display:none;margin-top:12px;">
+      <label>นาฬิกาท้องถิ่นกรุงเทพฯ (GMT+7)</label>
+      <div style="margin-top:10px" class="output big-time" id="localClock">--:--:--</div>
+      <div class="muted" style="margin-top:8px">เวลาอ้างอิง: GMT+7 (ประเทศไทย)</div>
+    </div>
+  </section>
+
+</main>
+
+<footer style="text-align:center">
+  <div>สร้างโดย Edu Tools • รองรับมือถือ/แท็บเล็ต/เดสก์ท็อป • ฟอนต์: Sarabun</div>
+</footer>
+
+<script>
+  /********* Theme color controls *********/
+  const accentInput = document.getElementById('accentColor');
+  const bgInput = document.getElementById('bgColor');
+
+  function setAccentColor(col){
+    document.documentElement.style.setProperty('--accent', col);
+  }
+  function setBGColor(col){
+    document.documentElement.style.setProperty('--bg', col);
+  }
+
+  accentInput.addEventListener('input', e => setAccentColor(e.target.value));
+  bgInput.addEventListener('input', e => setBGColor(e.target.value));
+
+  /********* Calculator logic *********/
+  const basicBtn = document.getElementById('calc-basic-btn');
+  const advBtn = document.getElementById('calc-adv-btn');
+  const basicPanel = document.getElementById('calc-basic');
+  const advPanel = document.getElementById('calc-adv');
+
+  basicBtn.addEventListener('click', ()=>{
+    basicPanel.style.display='block';
+    advPanel.style.display='none';
+    basicBtn.classList.add('btn'); advBtn.classList.remove('btn'); advBtn.classList.add('btn','ghost');
+    basicBtn.classList.remove('ghost');
+  });
+  advBtn.addEventListener('click', ()=>{
+    basicPanel.style.display='none';
+    advPanel.style.display='block';
+    advBtn.classList.remove('ghost'); advBtn.classList.add('btn');
+    basicBtn.classList.remove('btn'); basicBtn.classList.add('btn','ghost');
+  });
+
+  // Basic eval: allow only digits, operators + - * / . parentheses and spaces
+  function safeBasicEval(expr){
+    if(!/^[0-9+\-*/().\s%^]*$/.test(expr.replace(/%/g,'')) && !/Math|sin|cos|sqrt/.test(expr)){
+      throw new Error('มีตัวอักษรที่ไม่อนุญาต');
+    }
+    // replace ^ with ** for exponent
+    expr = expr.replace(/\^/g,'**');
+    // evaluate with Function (simpler)
+    return Function('"use strict"; return ('+expr+');')();
+  }
+
+  document.getElementById('calc-basic-eval').addEventListener('click', ()=>{
+    const expr = document.getElementById('basicExpr').value.trim();
+    const out = document.getElementById('basicResult');
+    if(!expr){ out.textContent = 'โปรดใส่นิพจน์'; return; }
+    try{
+      const val = safeBasicEval(expr);
+      out.textContent = String(val);
+    }catch(err){
+      out.textContent = 'ข้อผิดพลาด: ' + err.message;
+    }
+  });
+  document.getElementById('calc-basic-clear').addEventListener('click', ()=>{
+    document.getElementById('basicExpr').value='';
+    document.getElementById('basicResult').textContent='ผลลัพธ์จะแสดงที่นี่';
+  });
+
+  // Advanced: allow Math.* functions and certain names
+  const allowedTokens = ['Math','sin','cos','tan','sqrt','pow','log','abs','round','floor','ceil','PI','E','min','max'];
+  function safeAdvancedEval(expr){
+    // Replace common functions without Math prefix
+    // e.g., pow -> Math.pow
+    // But to be robust, we will only allow characters and letters, digits, operators, parentheses, commas, dot, space
+    if(!/^[0-9A-Za-z+\-*/()., \t%^]+$/.test(expr)){
+      throw new Error('มีตัวอักษรที่ไม่อนุญาตในสูตร');
+    }
+    // map known functions to Math. if not already
+    const fnNames = ['sin','cos','tan','sqrt','pow','log','abs','round','floor','ceil','min','max'];
+    for(const fn of fnNames){
+      const re = new RegExp('\\b'+fn+'\\s*\\(','g');
+      expr = expr.replace(re, 'Math.'+fn+'(');
+    }
+    expr = expr.replace(/\^/g,'**');
+    // final eval
+    return Function('"use strict"; return ('+expr+');')();
+  }
+
+  document.getElementById('calc-adv-eval').addEventListener('click', ()=>{
+    const expr = document.getElementById('advExpr').value.trim();
+    const out = document.getElementById('advResult');
+    if(!expr){ out.textContent='โปรดใส่สูตร'; return; }
+    try{
+      const val = safeAdvancedEval(expr);
+      out.textContent = String(val);
+    }catch(err){
+      out.textContent = 'ข้อผิดพลาด: ' + err.message;
+    }
+  });
+  document.getElementById('calc-adv-clear').addEventListener('click', ()=>{
+    document.getElementById('advExpr').value=''; document.getElementById('advResult').textContent='ผลลัพธ์จะแสดงที่นี่';
+  });
+  document.getElementById('calc-adv-sample').addEventListener('click', ()=>{
+    document.getElementById('advExpr').value = 'sqrt(2) + pow(3,2) + sin(30 * Math.PI/180)';
+  });
+
+  /********* Randomizer *********/
+  function splitItemsText(text){
+    if(!text) return [];
+    // split by newline or comma
+    const arr = text.split(/\r?\n|,/).map(s=>s.trim()).filter(s=>s.length);
+    return arr;
+  }
+
+  function shuffleArray(a){
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+  }
+
+  document.getElementById('rand-pick-btn').addEventListener('click', ()=>{
+    document.getElementById('rand-pick').style.display='block';
+    document.getElementById('rand-group').style.display='none';
+    document.getElementById('rand-pick-btn').classList.add('btn');
+    document.getElementById('rand-group-btn').classList.remove('btn'); document.getElementById('rand-group-btn').classList.add('btn','ghost');
+  });
+
+  document.getElementById('rand-group-btn').addEventListener('click', ()=>{
+    document.getElementById('rand-pick').style.display='none';
+    document.getElementById('rand-group').style.display='block';
+    document.getElementById('rand-group-btn').classList.remove('ghost'); document.getElementById('rand-group-btn').classList.add('btn');
+    document.getElementById('rand-pick-btn').classList.remove('btn'); document.getElementById('rand-pick-btn').classList.add('btn','ghost');
+  });
+
+  document.getElementById('do-rand-pick').addEventListener('click', ()=>{
+    const raw = document.getElementById('randItems').value;
+    const items = splitItemsText(raw);
+    const count = Math.max(1, parseInt(document.getElementById('randCount').value || '1'));
+    const out = document.getElementById('randResult');
+    if(items.length===0){ out.textContent='โปรดใส่รายการอย่างน้อย 1 รายการ'; return; }
+    const pick = Math.min(count, items.length);
+    shuffleArray(items);
+    const chosen = items.slice(0,pick);
+    out.innerHTML = '<strong>ผลลัพธ์:</strong> ' + chosen.map(x=>`<span>${x}</span>`).join(', ');
+  });
+
+  document.getElementById('rand-clear').addEventListener('click', ()=>{
+    document.getElementById('randItems').value=''; document.getElementById('randCount').value='1'; document.getElementById('randResult').textContent='ผลการสุ่มจะปรากฏที่นี่';
+  });
+
+  // Grouping
+  document.getElementById('do-rand-group').addEventListener('click', ()=>{
+    const raw = document.getElementById('groupMembers').value.trim();
+    const out = document.getElementById('groupResult');
+    let items = [];
+    // if raw is a number -> generate numbered members
+    if(/^\d+$/.test(raw)){
+      const n = parseInt(raw);
+      if(n<=0){ out.textContent='จำนวนสมาชิกต้องมากกว่า 0'; return; }
+      for(let i=1;i<=n;i++) items.push('Member ' + i);
+    } else {
+      // treat as list of names
+      items = splitItemsText(raw);
+      if(items.length===0){ out.textContent='โปรดใส่จำนวนสมาชิกหรือรายชื่อ'; return; }
+    }
+    const groups = Math.max(1, parseInt(document.getElementById('groupCount').value || '1'));
+    if(groups > items.length){
+      out.textContent = 'จำนวนกลุ่มมากกว่าจำนวนสมาชิก — จะมีบางกลุ่มว่าง';
+    }
+    // shuffle and distribute evenly (no decimals)
+    shuffleArray(items);
+    const base = Math.floor(items.length / groups);
+    let remainder = items.length % groups;
+    const result = [];
+    let idx = 0;
+    for(let g=0; g<groups; g++){
+      let size = base + (remainder>0 ? 1 : 0);
+      remainder = Math.max(0, remainder-1);
+      result.push(items.slice(idx, idx+size));
+      idx += size;
+    }
+    // render
+    let html = '';
+    for(let i=0;i<result.length;i++){
+      html += `<div style="margin-bottom:8px"><strong>Group ${i+1} (${result[i].length})</strong><div style="margin-top:6px">${result[i].map(x=>`<span>${x}</span>`).join(', ') || '<em>ว่าง</em>'}</div></div>`;
+    }
+    out.innerHTML = html;
+  });
+
+  document.getElementById('group-clear').addEventListener('click', ()=>{
+    document.getElementById('groupMembers').value=''; document.getElementById('groupCount').value='3'; document.getElementById('groupResult').textContent='ผลการแบ่งกลุ่มจะแสดงที่นี่';
+  });
+
+  /********* Timer logic *********/
+  // Mode buttons
+  const mCd = document.getElementById('mode-countdown');
+  const mSw = document.getElementById('mode-stopwatch');
+  const mClk = document.getElementById('mode-clock');
+
+  const panelCd = document.getElementById('timer-countdown');
+  const panelSw = document.getElementById('timer-stopwatch');
+  const panelClk = document.getElementById('timer-clock');
+
+  function showMode(mode){
+    panelCd.style.display = mode==='cd' ? 'block' : 'none';
+    panelSw.style.display = mode==='sw' ? 'block' : 'none';
+    panelClk.style.display = mode==='clk' ? 'block' : 'none';
+    // button styles
+    [mCd,mSw,mClk].forEach(b=>b.classList.remove('btn'));
+    if(mode==='cd') mCd.classList.add('btn'); else mCd.classList.add('btn','ghost');
+    if(mode==='sw') mSw.classList.add('btn'); else mSw.classList.add('btn','ghost');
+    if(mode==='clk') mClk.classList.add('btn'); else mClk.classList.add('btn','ghost');
+  }
+  showMode('cd');
+  mCd.addEventListener('click', ()=> showMode('cd'));
+  mSw.addEventListener('click', ()=> showMode('sw'));
+  mClk.addEventListener('click', ()=> showMode('clk'));
+
+  // Countdown
+  let cdInterval = null;
+  let cdRemaining = 0;
+  const cdDisplay = document.getElementById('cdDisplay');
+  function formatHMS(sec){
+    sec = Math.max(0, Math.floor(sec));
+    const h = Math.floor(sec/3600);
+    const m = Math.floor((sec%3600)/60);
+    const s = sec%60;
+    return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  }
+  document.getElementById('cdStart').addEventListener('click', ()=>{
+    const h = parseInt(document.getElementById('cdH').value||0);
+    const m = parseInt(document.getElementById('cdM').value||0);
+    const s = parseInt(document.getElementById('cdS').value||0);
+    const total = h*3600 + m*60 + s;
+    if(total < 1 || total > 24*3600){ alert('กรุณาใส่เวลาอย่างน้อย 1 วินาที และไม่เกิน 24 ชั่วโมง'); return; }
+    cdRemaining = total;
+    if(cdInterval) clearInterval(cdInterval);
+    cdDisplay.textContent = formatHMS(cdRemaining);
+    cdInterval = setInterval(()=>{
+      cdRemaining--;
+      cdDisplay.textContent = formatHMS(cdRemaining);
+      if(cdRemaining<=0){
+        clearInterval(cdInterval); cdInterval=null;
+        // แจ้งเตือน (เสียงเล็กๆ ด้วย beep)
+        try{ new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YRAAAAAA').play(); }catch(e){}
+        alert('เวลาเสร็จสิ้น!');
+      }
+    },1000);
+  });
+  document.getElementById('cdPause').addEventListener('click', ()=>{
+    if(cdInterval){ clearInterval(cdInterval); cdInterval=null; } else { // resume
+      if(cdRemaining>0){
+        cdInterval = setInterval(()=>{
+          cdRemaining--;
+          cdDisplay.textContent = formatHMS(cdRemaining);
+          if(cdRemaining<=0){ clearInterval(cdInterval); cdInterval=null; alert('เวลาเสร็จสิ้น!'); }
+        },1000);
+      }
+    }
+  });
+  document.getElementById('cdReset').addEventListener('click', ()=>{
+    if(cdInterval){ clearInterval(cdInterval); cdInterval=null; }
+    cdRemaining = 0; cdDisplay.textContent = '00:00:00';
+  });
+
+  // Stopwatch
+  let swInterval=null, swStartTime=0, swElapsed=0;
+  const swDisplay = document.getElementById('swDisplay');
+  function formatStopwatch(ms){
+    const cent = Math.floor(ms/10)%100;
+    const sec = Math.floor(ms/1000)%60;
+    const min = Math.floor(ms/60000);
+    return String(min).padStart(2,'0')+':'+String(sec).padStart(2,'0')+'.'+String(cent).padStart(2,'0');
+  }
+  document.getElementById('swStart').addEventListener('click', ()=>{
+    if(swInterval) return;
+    swStartTime = Date.now() - swElapsed;
+    swInterval = setInterval(()=> {
+      swElapsed = Date.now() - swStartTime;
+      swDisplay.textContent = formatStopwatch(swElapsed);
+    }, 30);
+  });
+  document.getElementById('swStop').addEventListener('click', ()=>{
+    if(swInterval){ clearInterval(swInterval); swInterval=null; }
+  });
+  document.getElementById('swReset').addEventListener('click', ()=>{
+    if(swInterval){ clearInterval(swInterval); swInterval=null; }
+    swElapsed = 0; swDisplay.textContent = '00:00.00';
+  });
+
+  // Local clock GMT+7
+  const localClock = document.getElementById('localClock');
+  function updateLocalClock(){
+    // get now in UTC then add 7 hours
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const tz7 = new Date(utc + 7*3600*1000);
+    function pad(n){ return String(n).padStart(2,'0'); }
+    localClock.textContent = `${pad(tz7.getHours())}:${pad(tz7.getMinutes())}:${pad(tz7.getSeconds())}`;
+  }
+  setInterval(updateLocalClock, 1000);
+  updateLocalClock();
+
+  // ensure accessibility: keyboard focus outline (optional)
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape'){
+      // quick reset any states?
+    }
+  });
+</script>
+
+</body>
+</html>
