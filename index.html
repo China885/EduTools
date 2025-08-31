@@ -127,15 +127,66 @@
 
     <div id="calculator" style="margin-top:12px">
       <!-- Basic mode UI -->
-      <div id="calc-basic" style="margin-top:10px;">
-        <label>ป้อนนิพจน์ (รองรับ + - * / และวงเล็บ)</label>
-        <input id="basicExpr" type="text" placeholder="เช่น 12 + 3 * (2 - 1)" />
-        <div style="margin-top:8px;display:flex;gap:8px;">
-          <button class="btn" id="calc-basic-eval">คำนวณ</button>
-          <button class="btn ghost" id="calc-basic-clear">ล้าง</button>
-        </div>
-        <div style="margin-top:10px" class="output" id="basicResult">ผลลัพธ์จะแสดงที่นี่</div>
-      </div>
+      <!-- Basic Calculator -->
+<div id="calc-basic" style="margin-top:10px; display:none;">
+  <label>เครื่องคิดเลขพื้นฐาน</label>
+  <input id="basicExpr" type="text" placeholder="0" readonly />
+
+  <!-- keypad -->
+  <div id="calc-keypad" style="margin-top:12px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+    <button class="btn" data-val="7">7</button>
+    <button class="btn" data-val="8">8</button>
+    <button class="btn" data-val="9">9</button>
+    <button class="btn ghost" data-val="/">÷</button>
+
+    <button class="btn" data-val="4">4</button>
+    <button class="btn" data-val="5">5</button>
+    <button class="btn" data-val="6">6</button>
+    <button class="btn ghost" data-val="*">×</button>
+
+    <button class="btn" data-val="1">1</button>
+    <button class="btn" data-val="2">2</button>
+    <button class="btn" data-val="3">3</button>
+    <button class="btn ghost" data-val="-">−</button>
+
+    <button class="btn" data-val="0">0</button>
+    <button class="btn" data-val=".">.</button>
+    <button class="btn ghost" id="calc-del">⌫</button>
+    <button class="btn ghost" data-val="+">+</button>
+
+    <button class="btn ghost" data-val="(">(</button>
+    <button class="btn ghost" data-val=")">)</button>
+    <button class="btn ghost" id="calc-clear">C</button>
+    <button class="btn" id="calc-eval">=</button>
+  </div>
+</div>
+
+<script>
+  const exprInput = document.getElementById("basicExpr");
+
+  // handle keypad
+  document.querySelectorAll("#calc-keypad button[data-val]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      exprInput.value += btn.dataset.val;
+    });
+  });
+
+  document.getElementById("calc-del").addEventListener("click", () => {
+    exprInput.value = exprInput.value.slice(0, -1);
+  });
+
+  document.getElementById("calc-clear").addEventListener("click", () => {
+    exprInput.value = "";
+  });
+
+  document.getElementById("calc-eval").addEventListener("click", () => {
+    try {
+      exprInput.value = eval(exprInput.value || "0");
+    } catch {
+      exprInput.value = "Error";
+    }
+  });
+</script>
 
       <!-- Advanced mode UI -->
       <div id="calc-adv" style="display:none;margin-top:10px;">
